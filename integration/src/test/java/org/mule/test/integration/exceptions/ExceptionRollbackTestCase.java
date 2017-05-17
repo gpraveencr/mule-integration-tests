@@ -8,9 +8,10 @@ package org.mule.test.integration.exceptions;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mule.runtime.core.config.i18n.CoreMessages.notSet;
+
 import org.mule.runtime.core.api.DefaultMuleException;
 import org.mule.runtime.core.api.transaction.Transaction;
-import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.exception.DefaultSystemExceptionStrategy;
 import org.mule.runtime.core.routing.filters.WildcardFilter;
 import org.mule.runtime.core.transaction.TransactionCoordination;
@@ -52,7 +53,7 @@ public class ExceptionRollbackTestCase extends AbstractMuleContextTestCase {
 
   @Test
   public void testRollback() throws Exception {
-    strategy.handleException(new DefaultMuleException(CoreMessages.agentsRunning()));
+    strategy.handleException(new DefaultMuleException(notSet()));
     assertTrue(tx.isRolledBack());
     // There is nothing to actually commit the transaction since we are not running in a real tx
     assertFalse(tx.isCommitted());
