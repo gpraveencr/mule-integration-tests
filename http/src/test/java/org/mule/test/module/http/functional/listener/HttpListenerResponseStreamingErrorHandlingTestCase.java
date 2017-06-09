@@ -11,16 +11,21 @@ import static org.mule.test.allure.AllureConstants.HttpFeature.HTTP_EXTENSION;
 import static org.mule.test.allure.AllureConstants.HttpFeature.HttpStory.ERROR_HANDLING;
 import static org.mule.test.allure.AllureConstants.HttpFeature.HttpStory.STREAMING;
 
+import org.mule.tck.junit4.FlakinessDetectorTestRunner;
+import org.mule.test.runner.RunnerDelegateTo;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Response;
-import org.junit.Ignore;
 import org.junit.Test;
 import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Stories;
 
 @Features(HTTP_EXTENSION)
 @Stories({ERROR_HANDLING, STREAMING})
+@RunnerDelegateTo(FlakinessDetectorTestRunner.class)
 public class HttpListenerResponseStreamingErrorHandlingTestCase extends AbstractHttpListenerErrorHandlingTestCase {
+
+  final int socketTimeout = DEFAULT_TIMEOUT * 2;
 
   @Override
   protected String getConfigFile() {
@@ -28,20 +33,19 @@ public class HttpListenerResponseStreamingErrorHandlingTestCase extends Abstract
   }
 
   @Test
-  @Ignore("MULE-12448: Sources error handling is inconsistent")
   public void exceptionHandledWhenBuildingResponse() throws Exception {
     final Response response =
-        Get(getUrl("exceptionBuildingResponse")).connectTimeout(DEFAULT_TIMEOUT).socketTimeout(DEFAULT_TIMEOUT).execute();
+        Get(getUrl("exceptionBuildingResponse")).connectTimeout(DEFAULT_TIMEOUT).socketTimeout(socketTimeout).execute();
 
     final HttpResponse httpResponse = response.returnResponse();
 
-    assertExceptionStrategyExecuted(httpResponse);
+    assertExceptionStrategyFailed(httpResponse, "java.io.IOException: Some exception");
   }
 
   @Test
-  public void exceptionNotHandledWhenSendingResponse() throws Exception {
+  public void exceptionHandledWhenSendingResponse() throws Exception {
     final Response response =
-        Get(getUrl("exceptionSendingResponse")).connectTimeout(DEFAULT_TIMEOUT).socketTimeout(DEFAULT_TIMEOUT * 2).execute();
+        Get(getUrl("exceptionSendingResponse")).connectTimeout(DEFAULT_TIMEOUT).socketTimeout(socketTimeout).execute();
 
     final HttpResponse httpResponse = response.returnResponse();
 
@@ -49,20 +53,19 @@ public class HttpListenerResponseStreamingErrorHandlingTestCase extends Abstract
   }
 
   @Test
-  @Ignore("MULE-12448: Sources error handling is inconsistent")
   public void exceptionHandledWhenBuildingResponseFailAgain() throws Exception {
     final Response response = Get(getUrl("exceptionBuildingResponseFailAgain")).connectTimeout(DEFAULT_TIMEOUT)
-        .socketTimeout(DEFAULT_TIMEOUT).execute();
+        .socketTimeout(socketTimeout).execute();
 
     final HttpResponse httpResponse = response.returnResponse();
 
-    assertExceptionStrategyFailed(httpResponse);
+    assertExceptionStrategyFailed(httpResponse, "java.io.IOException: Some exception");
   }
 
   @Test
   public void exceptionNotHandledWhenSendingResponseFailAgain() throws Exception {
     final Response response =
-        Get(getUrl("exceptionSendingResponseFailAgain")).connectTimeout(DEFAULT_TIMEOUT).socketTimeout(DEFAULT_TIMEOUT).execute();
+        Get(getUrl("exceptionSendingResponseFailAgain")).connectTimeout(DEFAULT_TIMEOUT).socketTimeout(socketTimeout).execute();
 
     final HttpResponse httpResponse = response.returnResponse();
 
