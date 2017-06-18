@@ -4,17 +4,18 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.test.integration;
+package org.mule.test.module.scheduler.integration;
 
-import static org.mule.runtime.api.deployment.management.ComponentInitialStateManager.SERVICE_ID;
-import static org.mule.test.allure.AllureConstants.SchedulerServiceFeature.SCHEDULER_SERVICE;
-import static org.mule.test.allure.AllureConstants.SchedulerServiceFeature.SchedulerServiceStory.SOURCE_MANAGEMENT;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.mule.runtime.api.deployment.management.ComponentInitialStateManager.SERVICE_ID;
+import static org.mule.test.allure.AllureConstants.SchedulerServiceFeature.SCHEDULER_SERVICE;
+import static org.mule.test.allure.AllureConstants.SchedulerServiceFeature.SchedulerServiceStory.SOURCE_MANAGEMENT;
 
+import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 import org.mule.runtime.api.component.location.Location;
 import org.mule.runtime.api.deployment.management.ComponentInitialStateManager;
 import org.mule.runtime.api.exception.MuleException;
@@ -28,26 +29,26 @@ import org.mule.runtime.core.api.config.ConfigurationException;
 import org.mule.runtime.core.api.functional.Either;
 import org.mule.tck.probe.PollingProber;
 import org.mule.tck.probe.Probe;
-import org.mule.test.AbstractIntegrationTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
+
 import ru.yandex.qatools.allure.annotations.Description;
 import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Stories;
 
 @Features(SCHEDULER_SERVICE)
 @Stories(SOURCE_MANAGEMENT)
-public class SchedulerInitialStateTestCase extends AbstractIntegrationTestCase {
+public class SchedulerInitialStateTestCase extends MuleArtifactFunctionalTestCase {
 
   private List<AnnotatedObject> recordedOnStartMessageSources = new ArrayList<>();
 
   @Override
   protected String getConfigFile() {
-    return "org/mule/test/integration/scheduler-initial-state-management-config.xml";
+    return "integration/scheduler-initial-state-management-config.xml";
   }
 
   @Override

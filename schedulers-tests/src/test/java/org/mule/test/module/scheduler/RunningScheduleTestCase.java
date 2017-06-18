@@ -4,32 +4,32 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.test.integration.schedule;
+package org.mule.test.module.scheduler;
 
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.tck.probe.JUnitLambdaProbe;
 import org.mule.tck.probe.PollingProber;
-import org.mule.test.AbstractIntegrationTestCase;
 
 import org.junit.Test;
 
 /**
  * This test checks that a Scheduler can be stopped, executed and started. Also shows how a customer can set his own scheduler in
  * mule config.
- *
+ * <p>
  * It also shows the way users can add a new Scheduler as a spring bean.
  */
-public class RunningScheduleTestCase extends AbstractIntegrationTestCase {
+public class RunningScheduleTestCase extends MuleArtifactFunctionalTestCase {
 
   public static final String SCHEDULER_NAME = "testScheduler";
 
   @Override
   protected String getConfigFile() {
-    return "org/mule/test/integration/schedule/scheduler-config.xml";
+    return "scheduler-config.xml";
   }
 
   @Test

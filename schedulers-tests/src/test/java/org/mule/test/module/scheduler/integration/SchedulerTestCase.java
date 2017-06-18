@@ -4,7 +4,7 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.test.integration;
+package org.mule.test.module.scheduler.integration;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -12,6 +12,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mule.runtime.core.api.Event.getCurrentEvent;
+
+import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.core.api.Event;
 import org.mule.runtime.core.api.construct.Flow;
@@ -21,14 +23,13 @@ import org.mule.runtime.core.api.source.MessageSource;
 import org.mule.runtime.core.source.scheduler.DefaultSchedulerMessageSource;
 import org.mule.tck.probe.PollingProber;
 import org.mule.tck.probe.Probe;
-import org.mule.test.AbstractIntegrationTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-public class SchedulerTestCase extends AbstractIntegrationTestCase {
+public class SchedulerTestCase extends MuleArtifactFunctionalTestCase {
 
   private static List<String> foo;
   private static List<String> bar;
@@ -46,7 +47,7 @@ public class SchedulerTestCase extends AbstractIntegrationTestCase {
 
   @Override
   protected String getConfigFile() {
-    return "org/mule/test/integration/scheduler-config.xml";
+    return "integration/scheduler-config.xml";
   }
 
   @Test

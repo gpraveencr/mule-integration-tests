@@ -4,28 +4,28 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.test.integration.schedule;
+package org.mule.test.module.scheduler;
 
 
+import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 import org.mule.runtime.core.api.context.notification.ConnectorMessageNotificationListener;
 import org.mule.runtime.core.context.notification.ConnectorMessageNotification;
 import org.mule.tck.probe.PollingProber;
 import org.mule.tck.probe.Probe;
 import org.mule.tck.probe.Prober;
-import org.mule.test.AbstractIntegrationTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-public class PollScheduleNotificationTestCase extends AbstractIntegrationTestCase {
+public class PollScheduleNotificationTestCase extends MuleArtifactFunctionalTestCase {
 
   private Prober prober = new PollingProber(5000, 100l);
 
   @Override
   protected String getConfigFile() {
-    return "org/mule/test/integration/schedule/poll-notifications-config.xml";
+    return "poll-notifications-config.xml";
   }
 
   @Test

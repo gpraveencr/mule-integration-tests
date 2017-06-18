@@ -4,11 +4,13 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.test.integration.schedule;
+package org.mule.test.module.scheduler;
 
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+
+import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.source.SchedulerMessageSource;
 import org.mule.runtime.core.api.construct.Flow;
@@ -18,7 +20,6 @@ import org.mule.tck.junit4.rule.SystemProperty;
 import org.mule.tck.probe.JUnitLambdaProbe;
 import org.mule.tck.probe.PollingProber;
 import org.mule.tck.probe.Probe;
-import org.mule.test.AbstractIntegrationTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import org.junit.Test;
 /**
  * This is a test for poll with schedulers. It validates that the polls can be executed, stopped, run.
  */
-public class PollScheduleTestCase extends AbstractIntegrationTestCase {
+public class PollScheduleTestCase extends MuleArtifactFunctionalTestCase {
 
   private static List<String> foo = new ArrayList<>();
   private static List<String> bar = new ArrayList<>();
@@ -42,7 +43,7 @@ public class PollScheduleTestCase extends AbstractIntegrationTestCase {
 
   @Override
   protected String getConfigFile() {
-    return "org/mule/test/integration/schedule/polling-schedule-config.xml";
+    return "polling-schedule-config.xml";
   }
 
   /**

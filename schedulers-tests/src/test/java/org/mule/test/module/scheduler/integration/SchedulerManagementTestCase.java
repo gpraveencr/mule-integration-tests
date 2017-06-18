@@ -4,15 +4,18 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.test.integration;
+package org.mule.test.module.scheduler.integration;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mule.functional.api.component.FunctionalTestProcessor.getFromFlow;
 import static org.mule.runtime.api.component.location.Location.builder;
 import static org.mule.test.allure.AllureConstants.SchedulerServiceFeature.SCHEDULER_SERVICE;
 import static org.mule.test.allure.AllureConstants.SchedulerServiceFeature.SchedulerServiceStory.SOURCE_MANAGEMENT;
 
+import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.message.Error;
 import org.mule.runtime.api.message.Message;
@@ -20,9 +23,11 @@ import org.mule.runtime.api.source.SchedulerMessageSource;
 import org.mule.runtime.core.api.functional.Either;
 import org.mule.runtime.core.api.util.concurrent.Latch;
 import org.mule.runtime.core.source.scheduler.DefaultSchedulerMessageSource;
+import org.mule.tck.junit4.FlakinessDetectorTestRunner;
+import org.mule.tck.junit4.FlakyTest;
+import org.mule.tck.probe.JUnitLambdaProbe;
 import org.mule.tck.probe.PollingProber;
-import org.mule.tck.probe.Probe;
-import org.mule.test.AbstractIntegrationTestCase;
+import org.mule.test.runner.RunnerDelegateTo;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,11 +40,13 @@ import ru.yandex.qatools.allure.annotations.Stories;
 
 @Features(SCHEDULER_SERVICE)
 @Stories(SOURCE_MANAGEMENT)
-public class SchedulerManagementTestCase extends AbstractIntegrationTestCase {
+@RunnerDelegateTo(FlakinessDetectorTestRunner.class)
+@FlakyTest
+public class SchedulerManagementTestCase extends MuleArtifactFunctionalTestCase {
 
   @Override
   protected String getConfigFile() {
-    return "org/mule/test/integration/scheduler-management-config.xml";
+    return "integration/scheduler-management-config.xml";
   }
 
   @Description("scheduler that never runs due to configuration but works by triggering it manually")
@@ -48,24 +55,11 @@ public class SchedulerManagementTestCase extends AbstractIntegrationTestCase {
     SchedulerMessageSource scheduler = (DefaultSchedulerMessageSource) muleContext.getConfigurationComponentLocator()
         .find(builder().globalName("neverRunningScheduler").addSourcePart().build()).get();
     scheduler.trigger();
-    new PollingProber(10000, 100).check(new Probe() {
-
-      @Override
-      public boolean isSatisfied() {
-        try {
-          Either<Error, Optional<Message>> response =
-              muleContext.getClient().request("test://neverRunningSchedulerQueue", 100);
-          return response.isRight() && response.getRight().isPresent();
-        } catch (MuleException e) {
-          return false;
-        }
-      }
-
-      @Override
-      public String describeFailure() {
-        return "Message expected by triggering flow";
-      }
-    });
+    new PollingProber(10000, 100).check(new JUnitLambdaProbe(() -> {
+      Either<Error, Optional<Message>> response =
+          muleContext.getClient().request("test://neverRunningSchedulerQueue", 100);
+      return response.isRight() && response.getRight().isPresent();
+    }, "Message expected by triggering flow"));
   }
 
   @Description("scheduler that runs once, gets stopped by a functional component within the same flow and the it's triggered manually")
@@ -86,18 +80,10 @@ public class SchedulerManagementTestCase extends AbstractIntegrationTestCase {
     }
 
     scheduler.trigger();
-    new PollingProber(10000, 100).check(new Probe() {
-
-      @Override
-      public boolean isSatisfied() {
-        return atomicInteger.get() == 2;
-      }
-
-      @Override
-      public String describeFailure() {
-        return "Executed two total executions of the flow but received " + atomicInteger.get();
-      }
-    });
+    new PollingProber(10000, 100).check(new JUnitLambdaProbe(() -> {
+      assertThat("Flow executions", atomicInteger.get(), is(2));
+      return true;
+    }));
   }
 
   @Description("scheduler start twice does not fail")
