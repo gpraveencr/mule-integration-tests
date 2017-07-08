@@ -67,4 +67,18 @@
         </error-handler>
     </flow>
 
+    <flow name="operationErrorMapping">
+            <http:request config-ref="simpleConfig" path="testPath">
+                <error-mapping sourceType="HTTP:NOT_FOUND" targetType="MY_REQUESTER"/>
+            </http:request>
+            <error-handler>
+                <on-error-continue type="MY_REQUESTER">
+                    <set-payload value="Not found."/>
+                </on-error-continue>
+                <on-error-continue>
+                    <set-payload value="Error."/>
+                </on-error-continue>
+            </error-handler>
+    </flow>
+
 </mule>

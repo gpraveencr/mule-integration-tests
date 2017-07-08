@@ -71,6 +71,12 @@ public class HttpRequestErrorMappingsTestCase extends AbstractHttpTestCase {
     verify("multipleMappings", CONNECT_ERROR_MESSAGE);
   }
 
+  @Test
+  @Description("Verifies that an operation error is handled.")
+  public void operationErrorMappingRequest() throws Exception {
+    verify("operationErrorMapping", "Not found.");
+  }
+
   private void verify(String flowName, String expectedPayload) throws Exception {
     verify(flowName, expectedPayload, emptyMap());
   }
