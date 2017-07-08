@@ -6,15 +6,16 @@
  */
 package org.mule.test.module.http.functional.requester;
 
-import static org.mule.functional.junit4.matchers.MessageMatchers.hasPayload;
-import static org.mule.functional.junit4.matchers.ThatMatcher.that;
-import static org.mule.test.allure.AllureConstants.HttpFeature.HTTP_EXTENSION;
-import static org.mule.test.allure.AllureConstants.HttpFeature.HttpStory.ERROR_HANDLING;
-import static org.mule.test.allure.AllureConstants.HttpFeature.HttpStory.ERROR_MAPPINGS;
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
+import static org.mule.functional.junit4.matchers.MessageMatchers.hasPayload;
+import static org.mule.functional.junit4.matchers.ThatMatcher.that;
+import static org.mule.runtime.http.api.HttpConstants.HttpStatus.NOT_FOUND;
+import static org.mule.test.allure.AllureConstants.HttpFeature.HTTP_EXTENSION;
+import static org.mule.test.allure.AllureConstants.HttpFeature.HttpStory.ERROR_HANDLING;
+import static org.mule.test.allure.AllureConstants.HttpFeature.HttpStory.ERROR_MAPPINGS;
+import org.mule.functional.junit4.rules.HttpServerRule;
 import org.mule.tck.junit4.rule.DynamicPort;
 import org.mule.test.module.http.functional.AbstractHttpTestCase;
 
@@ -33,7 +34,10 @@ public class HttpRequestErrorMappingsTestCase extends AbstractHttpTestCase {
   private static final String EXPRESSION_ERROR_MESSAGE = "Bad expression.";
 
   @Rule
-  public DynamicPort port = new DynamicPort("port");
+  public DynamicPort unusedPort = new DynamicPort("unusedPort");
+
+  @Rule
+  public HttpServerRule server = new HttpServerRule("port");
 
   @Override
   protected String getConfigFile() {
@@ -74,6 +78,7 @@ public class HttpRequestErrorMappingsTestCase extends AbstractHttpTestCase {
   @Test
   @Description("Verifies that an operation error is handled.")
   public void operationErrorMappingRequest() throws Exception {
+    server.getSimpleHttpServer().setResponseStatusCode(NOT_FOUND.getStatusCode());
     verify("operationErrorMapping", "Not found.");
   }
 

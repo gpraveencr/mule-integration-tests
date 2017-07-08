@@ -7,6 +7,10 @@
                http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 
     <http:request-config name="simpleConfig">
+        <http:request-connection host="localhost" port="${unusedPort}"/>
+    </http:request-config>
+
+    <http:request-config name="workingConfig">
         <http:request-connection host="localhost" port="${port}"/>
     </http:request-config>
 
@@ -68,7 +72,7 @@
     </flow>
 
     <flow name="operationErrorMapping">
-            <http:request config-ref="simpleConfig" path="testPath">
+            <http:request config-ref="workingConfig" path="testPath">
                 <error-mapping sourceType="HTTP:NOT_FOUND" targetType="MY_REQUESTER"/>
             </http:request>
             <error-handler>
