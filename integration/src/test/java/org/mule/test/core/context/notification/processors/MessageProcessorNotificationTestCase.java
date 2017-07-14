@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mule.runtime.core.api.context.notification.MessageProcessorNotification.MESSAGE_PROCESSOR_POST_INVOKE;
 import org.mule.functional.api.exception.FunctionalTestException;
+import org.mule.runtime.core.api.Event;
 import org.mule.runtime.core.api.context.notification.MessageProcessorNotification;
 import org.mule.runtime.core.api.exception.MessagingException;
 import org.mule.tck.core.context.notification.NotificationLogger;
@@ -320,7 +321,7 @@ public class MessageProcessorNotificationTestCase extends AbstractMessageProcess
     ;
 
     List<String> testList = Arrays.asList("test", "with", "collection");
-    assertNotNull(flowRunner("collectionAggregator").withPayload(testList).run());
+    Event result = flowRunner("collectionAggregator").withPayload(testList).run();
 
     assertNotifications();
   }
