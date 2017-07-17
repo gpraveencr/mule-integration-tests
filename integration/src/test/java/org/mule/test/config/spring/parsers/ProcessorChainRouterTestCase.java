@@ -6,15 +6,36 @@
  */
 package org.mule.test.config.spring.parsers;
 
+import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
+import org.mule.runtime.api.component.location.Location;
+import org.mule.runtime.api.message.Message;
 import org.mule.test.AbstractIntegrationTestCase;
+import org.mule.test.config.dsl.ParsersPluginTest;
+import org.mule.tests.parsers.api.CustomProcessorChainRouter;
 
-public class ProcessorChainRouterTestCase extends AbstractIntegrationTestCase {
+import javax.inject.Inject;
+
+import org.junit.Test;
+
+public class ProcessorChainRouterTestCase extends AbstractIntegrationTestCase implements ParsersPluginTest {
+
+  @Inject
+  private ConfigurationComponentLocator componentLocator;
 
   @Override
   protected String getConfigFile() {
     return "org/mule/config/spring/parsers/processor-chain-router-config.xml";
   }
 
+  @Test
+  public void test() {
+    CustomProcessorChainRouter chainRouter =
+        (CustomProcessorChainRouter) componentLocator.find(Location.builder().globalName("chainRouter").build()).get();
+    chainRouter.process(org.mule.runtime.api.event.Event.builder().message(Message.builder().nullPayload().build()).build());
+  }
 
-
+  @Override
+  protected boolean doTestClassInjection() {
+    return true;
+  }
 }
