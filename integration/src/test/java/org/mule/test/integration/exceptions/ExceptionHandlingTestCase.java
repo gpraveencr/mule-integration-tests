@@ -24,6 +24,7 @@ import static org.mule.runtime.core.api.util.ExceptionUtils.NULL_ERROR_HANDLER;
 import org.mule.functional.api.component.FlowAssert;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.message.Message;
+import org.mule.runtime.core.AbstractEventContext;
 import org.mule.runtime.core.api.Event;
 import org.mule.runtime.core.api.EventContext;
 import org.mule.runtime.core.api.client.MuleClient;

@@ -19,6 +19,7 @@ import static org.mule.runtime.api.source.SchedulerMessageSource.SCHEDULER_MESSA
 import static org.mule.test.allure.AllureConstants.ConfigurationComponentLocatorFeature.CONFIGURATION_COMPONENT_LOCATOR;
 import static org.mule.test.allure.AllureConstants.ConfigurationComponentLocatorFeature.ConfigurationComponentLocatorStory.SEARCH_CONFIGURATION;
 import org.mule.runtime.api.component.ComponentIdentifier;
+import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.component.location.Location;
 import org.mule.runtime.api.meta.AnnotatedObject;
 import org.mule.runtime.core.api.construct.Flow;
@@ -32,6 +33,7 @@ import java.util.Optional;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import org.junit.Assert;
 import org.junit.Test;
 
 @Feature(CONFIGURATION_COMPONENT_LOCATOR)
@@ -118,5 +120,17 @@ public class ConfigurationComponentLocatorTestCase extends AbstractIntegrationTe
         .find(ComponentIdentifier.buildFromStringRepresentation("mule:nonExistent"));
     assertThat(components, notNullValue());
     assertThat(components, hasSize(0));
+  }
+
+  @Description("Seach for all the components in the configuration")
+  @Test
+  public void findAllComponents() {
+    List<AnnotatedObject> annotatedObjects = muleContext.getConfigurationComponentLocator().findAll();
+    List<String> allComponentPaths = annotatedObjects.stream().map(AnnotatedObject::getLocation)
+        .map(ComponentLocation::getLocation).collect(toList());
+    Assert.assertThat(allComponentPaths, hasItems(
+                                                  "myFlow",
+                                                  "myFlow/source",
+                                                  "myFlow/processors/0"));
   }
 }

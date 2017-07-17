@@ -8,12 +8,13 @@ package org.mule.test.config.spring.parsers;
 
 import org.mule.test.AbstractIntegrationTestCase;
 
-public class ProcessorChainRouterTestCase extends AbstractIntegrationTestCase
-{
+public class ProcessorChainRouterTestCase extends AbstractIntegrationTestCase {
 
-    @Override
-    protected String getConfigFile() {
-        return "org/mule/config/spring/parsers/processor-chain-router-config.xml";
-    }
+  @Override
+  protected String getConfigFile() {
+    return "org/mule/config/spring/parsers/processor-chain-router-config.xml";
+  }
+
+
 
 }
