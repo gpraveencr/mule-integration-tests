@@ -212,10 +212,10 @@ public class ExceptionHandlingTestCase extends AbstractIntegrationTestCase {
       try {
         Field exceptionHandlerField = forName("org.mule.runtime.core.AbstractEventContext").getDeclaredField("exceptionHandler");
         exceptionHandlerField.setAccessible(true);
-        EventContext eventContext = event.getContext();
+        EventContext eventContext = event.getInternalContext();
         effectiveMessagingExceptionHandler = (MessagingExceptionHandler) exceptionHandlerField.get(eventContext);
         while (eventContext.getParentContext().isPresent() && effectiveMessagingExceptionHandler == NULL_ERROR_HANDLER) {
-          eventContext = eventContext.getParentContext().get();
+          eventContext = eventContext.getInternalParentContext().get();
           effectiveMessagingExceptionHandler = (MessagingExceptionHandler) exceptionHandlerField.get(eventContext);
         }
       } catch (Exception e) {

@@ -65,6 +65,25 @@
 
     <xsd:element name="text-pojo" type="textPojoType" substitutionGroup="mule:abstract-extension" />
 
+    <xsd:element name="processor-chain-router" type="processorChainRouterType" substitutionGroup="mule:abstract-extension"/>
+
+    <xsd:complexType name="processorChainRouterType">
+        <xsd:complexContent>
+            <xsd:extension base="mule:abstractMessageProcessorType">
+                <xsd:sequence>
+                    <xsd:element name="chain" minOccurs="1" maxOccurs="unbounded">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:group ref="mule:messageProcessorOrMixedContentMessageProcessor" minOccurs="1" maxOccurs="unbounded"/>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
     <xsd:complexType name="textPojoType">
         <xsd:complexContent>
             <xsd:extension base="mule:abstractExtensionType">

@@ -7,6 +7,7 @@
 package org.mule.test.config.dsl;
 
 import static java.lang.Integer.valueOf;
+import static org.mule.runtime.dsl.api.component.AttributeDefinition.Builder.fromChildCollectionConfiguration;
 import static org.mule.runtime.dsl.api.component.AttributeDefinition.Builder.fromChildConfiguration;
 import static org.mule.runtime.dsl.api.component.AttributeDefinition.Builder.fromChildMapConfiguration;
 import static org.mule.runtime.dsl.api.component.AttributeDefinition.Builder.fromMultipleDefinitions;
@@ -15,6 +16,8 @@ import static org.mule.runtime.dsl.api.component.KeyAttributeDefinitionPair.newB
 import static org.mule.runtime.dsl.api.component.TypeDefinition.fromMapEntryType;
 import static org.mule.runtime.dsl.api.component.TypeDefinition.fromType;
 import static org.mule.test.config.dsl.ParserXmlNamespaceInfoProvider.PARSERS_TEST_NAMESACE;
+import org.mule.runtime.core.api.processor.MessageProcessorChain;
+import org.mule.runtime.core.privileged.processor.ProcessorChainRouter;
 import org.mule.runtime.dsl.api.component.ComponentBuildingDefinition;
 import org.mule.runtime.dsl.api.component.ComponentBuildingDefinitionProvider;
 import org.mule.test.config.spring.parsers.beans.ParameterAndChildElement;
@@ -183,6 +186,11 @@ public class ParserComponentBuildingDefinitionProvider implements ComponentBuild
     definitions.add(baseBuilder.withIdentifier("component-created-with-object-factory")
         .withObjectFactoryType(TestObjectFactory.class)
         .withTypeDefinition(fromType(TestObject.class)).build());
+
+    definitions.add(baseBuilder.withIdentifier("processor-chain-router")
+        .withTypeDefinition(fromType(ProcessorChainRouter.class))
+        .withSetterParameterDefinition("processorChains", fromChildCollectionConfiguration(MessageProcessorChain.class).build())
+        .build());
 
     return definitions;
   }
