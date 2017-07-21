@@ -6,24 +6,21 @@
        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
        http://www.mulesoft.org/schema/mule/parsers-test http://www.mulesoft.org/schema/mule/parsers-test/current/mule-parsers-test.xsd">
 
-    <parsers-test:composite-processor-chain-router name="compositeChainRouter">
+    <parsers-test:processor-chain-router name="chainRouter">
         <parsers-test:chain>
-            <set-variable variableName="myVar" value="#['myVar' ++ customVar]"/>
+            <set-payload value="value"/>
+            <set-variable variableName="myVar" value="myVarValue"/>
         </parsers-test:chain>
         <parsers-test:chain>
             <set-variable variableName="mySecondVar" value="mySecondVarValue"/>
         </parsers-test:chain>
         <parsers-test:chain>
             <logger/>
-            <set-payload value="#[payload ++ ' custom']"/>
+            <set-payload value="anotherValue"/>
             <first-successful>
                 <set-variable variableName="myThirdVar" value="myThirdVarValue"/>
             </first-successful>
         </parsers-test:chain>
-    </parsers-test:composite-processor-chain-router>
-
-    <parsers-test:processor-chain-router name="chainRouter">
-        <set-payload value="#[]"/>
     </parsers-test:processor-chain-router>
 
 </mule>

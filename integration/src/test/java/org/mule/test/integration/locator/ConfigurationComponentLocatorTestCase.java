@@ -8,6 +8,7 @@ package org.mule.test.integration.locator;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -33,7 +34,6 @@ import java.util.Optional;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import org.junit.Assert;
 import org.junit.Test;
 
 @Feature(CONFIGURATION_COMPONENT_LOCATOR)
@@ -122,15 +122,22 @@ public class ConfigurationComponentLocatorTestCase extends AbstractIntegrationTe
     assertThat(components, hasSize(0));
   }
 
-  @Description("Seach for all the components in the configuration")
+  @Description("Search for all the components in the configuration")
   @Test
   public void findAllComponents() {
     List<AnnotatedObject> annotatedObjects = muleContext.getConfigurationComponentLocator().findAll();
     List<String> allComponentPaths = annotatedObjects.stream().map(AnnotatedObject::getLocation)
         .map(ComponentLocation::getLocation).collect(toList());
-    Assert.assertThat(allComponentPaths, hasItems(
-                                                  "myFlow",
-                                                  "myFlow/source",
-                                                  "myFlow/processors/0"));
+    assertThat(allComponentPaths, containsInAnyOrder(
+                                                     "myFlow",
+                                                     "myFlow/source",
+                                                     "myFlow/processors/0",
+                                                     "myFlow/processors/1",
+                                                     "myFlow/processors/2",
+                                                     "myFlow/processors/2/processors/0",
+                                                     "myFlow/processors/2/processors/1",
+                                                     "anotherFlow",
+                                                     "anotherFlow/source",
+                                                     "anotherFlow/processors/0"));
   }
 }
