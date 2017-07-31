@@ -159,7 +159,7 @@ public class ErrorHandlerTestCase extends AbstractIntegrationTestCase {
   @Test
   public void redelivery() throws Exception {
     MessageRedeliveredException exception =
-        new MessageRedeliveredException("3", 1, 1, eventBuilder().message(of("0")).build(), mockMP);
+        new MessageRedeliveredException("3", 1, 1, eventBuilder().muleContext(muleContext).message(of("0")).build(), mockMP);
     callTypeAndThrowException(exception, "0 redelivery");
   }
 
