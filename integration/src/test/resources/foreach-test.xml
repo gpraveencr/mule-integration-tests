@@ -10,14 +10,14 @@
                http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
 
     <flow name="minimal-config">
-        <foreach>
+        <foreach target="null">
             <test:processor/>
             <test:queue name="out"/>
         </foreach>
     </flow>
 
     <flow name="minimal-config-plus-mp">
-        <foreach>
+        <foreach target="null">
             <test:processor/>
             <test:queue name="out"/>
         </foreach>
@@ -30,66 +30,61 @@
     </flow>
 
     <flow name="minimal-config-expression">
-        <foreach collection="#[vars.names]">
+        <foreach collection="#[vars.names]" target="null">
             <test:processor/>
             <test:queue name="out"/>
         </foreach>
     </flow>
 
     <flow name="filtered-config">
-        <foreach collection="#[vars.names]" ignoreErrorType="VALIDATION:VALIDATION">
+        <foreach collection="#[vars.names]" target="null">
             <test:processor/>
-            <validation:is-true expression="#[false]"/>
-            <test:processor throwException="true" exceptionText="Should not have reached here"/>
+            <try>
+                <validation:is-true expression="#[false]"/>
+                <test:processor throwException="true" exceptionText="Should not have reached here"/>
+                <error-handler>
+                    <on-error-continue type="VALIDATION:VALIDATION"/>
+                </error-handler>
+            </try>
         </foreach>
     </flow>
 
     <flow name="partitioned-config">
-        <foreach batchSize="${batch.size}">
+        <foreach batchSize="${batch.size}" target="null">
             <test:processor/>
             <test:queue name="out"/>
         </foreach>
     </flow>
 
     <flow name="parent-message-config">
-        <foreach rootMessageVariableName="parent">
+        <foreach rootMessageVariableName="parent" target="null">
             <test:processor/>
             <set-variable variableName="parent2" value="#[vars.parent]" />
         </foreach>
-        <test:assert expression="#[payload == vars.parent2.payload]"/>
+        <test:assert expression="#[payload == vars.parent2[0].payload]"/>
     </flow>
 
     <flow name="message-collection-config">
-        <foreach>
-            <test:assert expression="#[mel:message.outboundProperties['out']=='out'+counter]" />
+        <foreach collection="#[payload.*payload]">
             <set-variable variableName="totalMessages" value="#[mel:counter]"/>
         </foreach>
-        <test:assert expression="#[vars.totalMessages==10]" />
-    </flow>
-
-    <flow name="message-collection-config-one-way">
-        <foreach>
-            <test:assert expression="#[mel:message.inboundProperties['out']=='out'+counter]" />
-            <set-variable variableName="totalMessages" value="#[mel:counter]"/>
-        </foreach>
-        <logger level="WARN" message="variable:totalMessages: #[mel:flowVars.totalMessages]"/>
-        <test:assert expression="#[vars.totalMessages==10]" />
+        <test:assert expression="#[sizeOf(vars.totalMessages) == 10]" />
     </flow>
 
     <flow name="map-config">
-        <foreach>
+        <foreach target="null">
             <test:processor/>
             <set-variable variableName="totalMessages" value="#[vars.counter]" />
         </foreach>
-        <test:assert expression="#[vars.totalMessages == 2]" />
+        <test:assert expression="#[sizeOf(vars.totalMessages) == 2]" />
     </flow>
 
     <flow name="map-expression-config">
-        <foreach collection="#[mel:message.inboundProperties.names]">
+        <foreach collection="#[mel:message.inboundProperties.names]" target="null">
             <test:processor/>
             <set-variable variableName="totalMessages" value="#[vars.counter]" />
         </foreach>
-        <test:assert expression="#[vars.totalMessages == 3]"/>
+        <test:assert expression="#[sizeOf(vars.totalMessages) == 3]"/>
     </flow>
 
     <flow name="process-order-update">
@@ -98,59 +93,35 @@
         </foreach>
     </flow>
 
-    <flow name="process-json-update">
-        <test:assert expression="#[mel:payload.order.items.size() == 2]" />
-        <foreach collection="#[mel:payload.order.items]">
-            <script:component>
-                <script:script engine="groovy">
-                    <![CDATA[
-                    def root = vars.rootMessage.payload.value
-                    def key = "key3-" + vars.counter
-                    root.order.items << [(key) : "je"]
-                    ]]>
-                </script:script>
-            </script:component>
-        </foreach>
-        <test:assert expression="#[mel:payload is Map]" />
-        <test:assert expression="#[mel:payload.order.items.size() == 4]" />
-    </flow>
-
     <flow name="array-expression-config">
-        <set-variable variableName="loops" value="0" />
-        <foreach>
-            <script:component>
-                <script:script engine="groovy">
-                    def loops = vars.loops.toInteger()
-                    loops++
-                    vars['loops'] = loops + ""
-                </script:script>
-            </script:component>
+        <foreach target="null">
+            <test:processor/>
         </foreach>
-        <test:assert expression="#[vars.loops == '3']" />
     </flow>
 
-    <flow name="counter-scope">
+    <flow name="variables-cleared">
         <foreach>
             <test:processor/>
         </foreach>
         <test:assert expression="#[vars.counter == null]"/>
+        <test:assert expression="#[vars.rootMessage == null]"/>
     </flow>
 
     <flow name="counter-two-foreach-independence">
-        <foreach>
+        <foreach target="null">
             <test:processor/>
             <set-variable variableName="totalMessages" value="#[vars.counter]" />
         </foreach>
-        <foreach>
+        <foreach target="null">
             <test:processor/>
             <set-variable variableName="totalMessages" value="#[vars.counter]" />
         </foreach>
-        <test:assert expression="#[vars.totalMessages == 3]"/>
+        <test:assert expression="#[sizeOf(vars.totalMessages) == 3]"/>
     </flow>
 
     <flow name="nested-foreach">
-        <foreach>
-            <foreach>
+        <foreach target="null">
+            <foreach target="null">
                 <test:processor/>
                 <test:queue name="out"/>
             </foreach>
@@ -159,24 +130,20 @@
 
     <flow name="nested-foreach-counters">
         <set-variable variableName="i" value="0"/>
-        <foreach>
-            <set-variable variableName="j" value="0"/>
-            <foreach>
-                <test:processor/>
-                <test:assert expression="(vars.j as Number) + 1 == vars.counter"/>
-                <set-variable variableName="j" value="#[vars.counter]"/>
-                <test:queue name="out"/>
+        <foreach target="null">
+            <set-variable variableName="i" value="outer"/>
+            <foreach target="null">
+                <set-variable variableName="i" value="inner"/>
             </foreach>
-            <test:assert expression="(vars.i as Number) + 1 == vars.counter"/>
-            <set-variable variableName="i" value="#[vars.counter]"/>
-            <test:queue name="out"/>
         </foreach>
+        <logger level="ERROR" message="#[vars.i]"/>
+        <test:assert expression="#[sizeOf(vars.i) == 4]"/>
     </flow>
 
     <flow name="foreach-properties-restored">
         <set-variable variableName="counter" value="hello" />
         <set-variable variableName="rootMessage" value="world" />
-        <foreach>
+        <foreach target="null">
             <test:processor/>
             <test:queue name="out"/>
         </foreach>
@@ -217,20 +184,20 @@
             <flow-ref name="assertIterable" />
         </foreach>
     </flow>
-    
+
     <sub-flow name="assertIterable">
         <test:processor/>
         <test:assert expression="#[mel:payload instanceof String]"  message="hoal"/>
         <logger level="ERROR" message="message-#[mel:counter]: #[mel:payload]"/>
         <test:queue name="out"/>
     </sub-flow>
-    
+
     <flow name="mvel-error">
         <foreach collection="#[mel:invalid]">
             <test:processor/>
         </foreach>
     </flow>
-    
+
     <flow name="foreachWithAsync">
 		<foreach>
 			<async>
@@ -265,8 +232,10 @@
     </flow>
 
     <flow name="splitJsonComplexValue">
-        <foreach collection="#[vars.content.users]" batchSize="2">
-            <foreach>
+        <foreach collection="#[vars.content.users]" batchSize="2" target="null">
+            <logger level="ERROR" />
+            <foreach target="null">
+                <logger level="ERROR" />
                 <test:queue name="splitJsonComplexValueOutQueue" contentJavaType="java.lang.String">
                     <test:content>#["$(payload.name) $(payload.lastname)"]</test:content>
                 </test:queue>
@@ -289,7 +258,7 @@
     </flow>
 
     <flow name="splitPayload">
-        <foreach>
+        <foreach collection="#[payload.*payload]">
             <choice>
                 <when expression="#[vars.useExpression]">
                     <test:queue name="splitPayloadOutQueue" contentJavaType="java.lang.String">
