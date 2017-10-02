@@ -31,20 +31,20 @@
     <muleExtensionTestSoapTestVersion>1.0.0-greenarrow</muleExtensionTestSoapTestVersion>
 
     <muleSpringModuleVersion>1.0.0-SNAPSHOT</muleSpringModuleVersion>
-    <muleValidationModuleTestVersion>1.0.0-greenarrow</muleValidationModuleTestVersion>
-    <muleScriptingModuleVersion>1.0.0-greenarrow</muleScriptingModuleVersion>
-    <muleFileCommonsTestVersion>1.0.0-greenarrow</muleFileCommonsTestVersion>
+    <muleValidationModuleTestVersion>2.0.0-greenarrow</muleValidationModuleTestVersion>
+    <muleScriptingModuleVersion>2.0.0-greenarrow</muleScriptingModuleVersion>
+    <muleFileCommonsTestVersion>2.0.0-greenarrow</muleFileCommonsTestVersion>
     
-    <muleHttpConnectorTestVersion>1.0.0-greenarrow</muleHttpConnectorTestVersion>
+    <muleHttpConnectorTestVersion>2.0.0-greenarrow</muleHttpConnectorTestVersion>
     <muleObjectStoreConnectorTestVersion>1.0.0-SNAPSHOT</muleObjectStoreConnectorTestVersion>
-    <muleDbConnectorTestVersion>1.0.0-greenarrow</muleDbConnectorTestVersion>
-    <muleFtpConnectorTestVersion>1.0.0-greenarrow</muleFtpConnectorTestVersion>
-    <muleFileConnectorTestVersion>1.0.0-greenarrow</muleFileConnectorTestVersion>
-    <muleJmsConnectorTestVersion>1.0.0-greenarrow</muleJmsConnectorTestVersion>
-    <muleWscConnectorTestVersion>1.0.0-greenarrow</muleWscConnectorTestVersion>
-    <muleOauthModuleTestVersion>1.0.0-greenarrow</muleOauthModuleTestVersion>
-    <muleSocketsConnectorTestVersion>1.0.0-greenarrow</muleSocketsConnectorTestVersion>
-    <muleSpringModuleTestVersion>1.0.0-greenarrow</muleSpringModuleTestVersion>
+    <muleDbConnectorTestVersion>2.0.0-greenarrow</muleDbConnectorTestVersion>
+    <muleFtpConnectorTestVersion>2.0.0-greenarrow</muleFtpConnectorTestVersion>
+    <muleFileConnectorTestVersion>2.0.0-greenarrow</muleFileConnectorTestVersion>
+    <muleJmsConnectorTestVersion>2.0.0-greenarrow</muleJmsConnectorTestVersion>
+    <muleWscConnectorTestVersion>2.0.0-greenarrow</muleWscConnectorTestVersion>
+    <muleOauthModuleTestVersion>2.0.0-greenarrow</muleOauthModuleTestVersion>
+    <muleSocketsConnectorTestVersion>2.0.0-greenarrow</muleSocketsConnectorTestVersion>
+    <muleSpringModuleTestVersion>2.0.0-greenarrow</muleSpringModuleTestVersion>
 
     <springVersion>4.1.9.RELEASE</springVersion>
     <springSecurityVersion>4.0.4.RELEASE</springSecurityVersion>
